@@ -7,8 +7,24 @@ defmodule YatzyScoreCardTest do
     {:ok, [pid: pid]}
   end
 
-  test "set and get score", context do
-    YatzyScoreCard.Store.set(context[:pid], {:ones, 4})
-    assert 4 == YatzyScoreCard.Store.get(context[:pid], :ones)
+  test "register valid option", context do
+    YatzyScoreCard.register(context[:pid], {:ones, 4})
+  end
+
+  test "cannot register unknown option", context do
+    assert_raise MatchError, fn -> YatzyScoreCard.register(context[:pid], {:sevens, 4}) end
+  end
+
+  test "cannot register option more than once", context do
+    YatzyScoreCard.register(context[:pid], {:ones, 4})
+    {result, _ } = YatzyScoreCard.register(context[:pid], {:ones, 4})
+    assert result == :error
+  end
+
+  test "sums all values", context do
+    YatzyScoreCard.register(context[:pid], {:ones, 4})
+    YatzyScoreCard.register(context[:pid], {:twos, 6})
+    YatzyScoreCard.register(context[:pid], {:fives, 15})
+    assert 25 == YatzyScoreCard.total(context[:pid])
   end
 end
