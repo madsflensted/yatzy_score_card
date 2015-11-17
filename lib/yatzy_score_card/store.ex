@@ -1,7 +1,7 @@
 defmodule YatzyScoreCard.Store do
 
-  def start_link do
-    Agent.start_link(fn -> {%{}, 0} end)
+  def start_link(name) do
+    Agent.start_link(fn -> {%{}, 0} end, name: name)
   end
   
   def set(pid, {name, value}) do
